@@ -1,9 +1,12 @@
 from glob import glob
 import csv
 import os 
+import re
 
 os.chdir(os.path.dirname(os.path.abspath(__file__))) # cd to script dir
 filenames = glob("./input/*.csv") 
+
+year_pattern = '[2][0][0-2][0-9]' # outputs year in results.txt
 
 with open('results.txt', 'w') as results_file:
     sum = 0
@@ -27,11 +30,11 @@ with open('results.txt', 'w') as results_file:
                         price = float(amount[2:])
                         sum = round(sum + price, 2)
                         year_sum = round(year_sum + price, 2)
-                    # print(year_sum)
                 except IndexError:
-                    # print("index error. continuing to next file")
+                    print("index error. skipping to next line.")
                     continue
-        output_line = "In this year, I've spent $" + str(year_sum) + ".\n"
+        year = re.search(year_pattern, filename).group()
+        output_line = "In " + year + ", I've spent $" + str(year_sum) + ".\n"
         results_file.write(output_line)
     output_line = "In total, I've spent $" + str(sum) + ".\n"
     results_file.write(output_line)
